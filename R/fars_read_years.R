@@ -1,0 +1,42 @@
+#'Add and select columns on datasets
+#'
+#'Add new column of year data, select columns related to month
+#'and year data in CSV files containing American public yearly data
+#'regarding fatal injuries suffered in motor vehicle traffic crashes,
+#'then convert the default dataframe format to tibble.
+#'
+#'
+#' @param years integer or integer vector specifying year of the dataset
+#' ready to be read in.
+#'
+#' @return List of tibbles containing columns of year and month
+#'
+#' @examples
+#' \dontrun{
+#' years <- c(2013,2014,2015)
+#' fars_read_years(years)}
+#'
+#' @details
+#' \itemize{
+#'  \item{}{Valid years are exclusively 2013, 2014 and 2015, an error
+#'  message will be post and program will be stopped if invalid years
+#'  are inputted}
+#'  \item{}{User is required to install prerequisted package \code{\link{dplyr}},
+#'  an error message will be post and program will be stopped}
+#'  }
+#'
+#'
+#'@export
+fars_read_years <- function(years) {
+  lapply(years, function(year) {
+    file <- make_filename(year)
+    tryCatch({
+      dat <- fars_read(file)
+      dplyr::mutate(dat, year = year) %>%
+        dplyr::select(MONTH, year)
+    }, error = function(e) {
+      warning("invalid year: ", year)
+      return(NULL)
+    })
+  })
+}

@@ -1,0 +1,65 @@
+---
+title: "Briefing on package YGWLGiaoGiao"
+author: "Xinwei Long"
+date: "10/24/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+The package YGWLGiaoGiao is mainly used for present summary and plots of American public yearly data
+regarding fatal injuries suffered in motor vehicle traffic crashes. Users can leverage the functions in the package to point to and read in CSV files containing crashes data across years from 2013 to 2015, see the summaries of occurence of crashes by month for certain year, and finally plot the spot of crashes trough importing package `maps()`.
+
+Before using the functions in the package, you should first load in the necessary packages including the pacakge itself
+```{r load-in,message=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(YGWLGiaoGiao)
+```
+
+## The `make_filename` function
+This funcition can produce the file name of the dataset by only inputing year number, which serves as an intermediate function to `fars_read` function.
+```{r make}
+year <- make_filename(2013)
+year
+```
+
+## The `fars_read` function
+You may want to specify the name of CSV file containing data of certain year if you know one. Make sure you have downloaded the CSV files from [link](http://www.nhtsa.gov/Data/Fatality-Analysis-Reporting-System-(FARS)) and set the current path to the dictionary where CSV files are stored.
+```{r path}
+accident <- fars_read("accident_2013.csv.bz2")
+accident %>% slice(1:5)
+```
+Practically, this function serves an intermediate function to `fars_read_years` and `fars_map_state` functions.
+
+## The `fars_read_years` function
+You can input a integer vector containing years of dataset. This function then prepare the list of tibbles by year for the function `fars_summarize_years`
+```{r read_years}
+years <- c(2013,2014,2015)
+fars_read_years(years)[[1]]
+```
+
+## The `fars_summarize` function 
+This function can present the monthly occurence of crashes for a specific year. To illustrate how to use this function, please check the example below:  
+
+Initiate the years vector and input it in `fars_summarize`, the result is preseted in a tibble 
+```{r initiate, eval=FALSE}
+fars_summarize_years(years)
+```
+```{r run_summarize, echo=FALSE}
+fars_summarize_years(c(2013,2014,2015))
+```
+
+## The `fars_map_state` function
+By importing the function `map` from `maps`, you can plot the spot of crashes of certain year for one state in US. To do this, you need two inputs `state.num`, which specifies the state number, and `year`. If you want to plot the spot of crashes in 2013 for Alabama, we can run the folloing code:
+```{r map_input}
+year <- 2013
+state.num <- "1"
+fars_map_state(state.num, year)
+```
+
+
