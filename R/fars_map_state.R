@@ -4,7 +4,7 @@
 #'traffic crashes on the map of the state specified by state
 #'number.
 #'
-#'
+#' 
 #' @param state.num string or integer specifying the state number
 #' corresponing to an existing state in US
 #'
